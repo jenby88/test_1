@@ -1,6 +1,9 @@
 # macOS
 .DS_Store
 
+# IDE
+.vscode/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -26,3 +29,13 @@ build/
 .pytest_cache/
 htmlcov/
 .coverage
+
+# Test Reports
+reports/*.html
+reports/*.json
+reports/*.png
+reports/screenshots/
+!reports/.gitkeep
+
+# Data Cache
+data/cache/
