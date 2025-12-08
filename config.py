@@ -30,7 +30,7 @@ class Config:
     # 예: ['로그인']           → 로그인만 다운로드, 나머지는 캐시 사용
     # 예: ['로그인', '장바구니'] → 둘 다 다운로드
     # 예: []                  → 모두 캐시 사용 (가장 빠름)
-    SCENARIOS_TO_REFRESH = []  # 빈 리스트면 모두 로컬 캐시 사용
+    SCENARIOS_TO_REFRESH = ['로그인']  # 로그인 시트 컬럼명 수정으로 새로 다운로드
 
     # 캐시 디렉토리
     CACHE_DIR = "data/cache"

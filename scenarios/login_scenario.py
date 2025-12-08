@@ -46,7 +46,7 @@ class LoginScenario:
         테스트 케이스 실행
 
         Args:
-            test_data: 테스트 데이터 (TC_ID, Feature, Guven, Given_value, When, Then 등)
+            test_data: 테스트 데이터 (TC_ID, Feature, Given, Given_value, When, Then 등)
 
         Returns:
             Tuple[테스트ID, 기능명, 결과(PASS/FAIL), 에러메시지]
@@ -54,8 +54,8 @@ class LoginScenario:
         # Google Sheets 컬럼명에 맞게 매핑
         test_id = test_data.get('TC_ID', test_data.get('TESTCASE_ID', 'UNKNOWN'))
         feature = test_data.get('Feature', test_data.get('FEATURE', 'UNKNOWN'))
-        given = test_data.get('Guven', test_data.get('Given', ''))
-        given_value = test_data.get('Guven_value', test_data.get('Given_value', ''))
+        given = test_data.get('Given', '')
+        given_value = test_data.get('Given_value', '')
         when = test_data.get('When', '')
         then = test_data.get('Then', '')
 

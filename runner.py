@@ -5,7 +5,7 @@ Playwright 브라우저를 실행하고 모든 테스트케이스를 순차 실�
 from playwright.sync_api import sync_playwright, Browser, Page
 from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 
 from config import Config
 from data.data_loader import DataLoader
@@ -50,8 +50,8 @@ class TestRunner:
             scenarios_to_refresh=self.config.SCENARIOS_TO_REFRESH
         )
         self.results: List[Dict] = []
-        self.browser: Browser = None
-        self.page: Page = None
+        self.browser: Optional[Browser] = None
+        self.page: Optional[Page] = None
         self.report_dir = Path(self.config.REPORT_DIR)
         self.report_dir.mkdir(exist_ok=True)
         self.report_generator = HTMLReportGenerator(self.report_dir)
@@ -80,28 +80,29 @@ class TestRunner:
         else:
             raise ValueError(f"지원하지 않는 브라우저 타입: {self.config.BROWSER_TYPE}")
 
-        self.page = self.browser.new_page()
+        if self.browser:
+            self.page = self.browser.new_page()
 
-        # 브라우저 콘솔 로그 수집
-        def handle_console(msg):
-            log_entry = f"[{msg.type.upper()}] {msg.text}"
-            self.console_logs.append(log_entry)
+            # 브라우저 콘솔 로그 수집
+            def handle_console(msg):
+                log_entry = f"[{msg.type.upper()}] {msg.text}"
+                self.console_logs.append(log_entry)
 
-        self.page.on("console", handle_console)
+            self.page.on("console", handle_console)
 
-        # 네트워크 로그 수집 (요청/응답)
-        def handle_request(request):
-            log_entry = f"→ {request.method} {request.url}"
-            self.network_logs.append(log_entry)
+            # 네트워크 로그 수집 (요청/응답)
+            def handle_request(request):
+                log_entry = f"→ {request.method} {request.url}"
+                self.network_logs.append(log_entry)
 
-        def handle_response(response):
-            log_entry = f"← {response.status} {response.url}"
-            self.network_logs.append(log_entry)
+            def handle_response(response):
+                log_entry = f"← {response.status} {response.url}"
+                self.network_logs.append(log_entry)
 
-        self.page.on("request", handle_request)
-        self.page.on("response", handle_response)
+            self.page.on("request", handle_request)
+            self.page.on("response", handle_response)
 
-        print("[실행 레이어] 콘솔 및 네트워크 로그 수집 활성화")
+            print("[실행 레이어] 콘솔 및 네트워크 로그 수집 활성화")
 
     def _teardown_browser(self) -> None:
         """브라우저 종료"""
@@ -112,10 +113,12 @@ class TestRunner:
     def _take_screenshot(self, test_id: str) -> str:
         """스크린샷 저장"""
         try:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            screenshot_path = self.report_dir / f"screenshot_{test_id}_{timestamp}.png"
-            self.page.screenshot(path=str(screenshot_path))
-            return str(screenshot_path)
+            if self.page:
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                screenshot_path = self.report_dir / f"screenshot_{test_id}_{timestamp}.png"
+                self.page.screenshot(path=str(screenshot_path))
+                return str(screenshot_path)
+            return ""
         except Exception as e:
             print(f"  [경고] 스크린샷 저장 실패: {e}")
             return ""

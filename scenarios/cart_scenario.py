@@ -116,8 +116,8 @@ class CartScenario:
         # Google Sheets 컬럼명에 맞게 매핑
         test_id = test_data.get('TC_ID', test_data.get('TESTCASE_ID', 'UNKNOWN'))
         feature = test_data.get('Feature', test_data.get('FEATURE', 'UNKNOWN'))
-        given = test_data.get('Given', test_data.get('Guven', ''))
-        given_value = test_data.get('Given_value', test_data.get('Guven_value', ''))
+        given = test_data.get('Given', '')
+        given_value = test_data.get('Given_value', '')
         when = test_data.get('When', '')
         then = test_data.get('Then', '')
 
